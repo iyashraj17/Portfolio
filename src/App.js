@@ -186,7 +186,7 @@ const ParticleBackground = () => {
 
 const LandingPage = ({ onNavigate }) => {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center text-white text-center p-4">
+        <div className="h-screen w-screen flex flex-col items-center justify-center text-white text-center p-4">
             <div className="animate-fade-in-down">
                 <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: "'Exo 2', sans-serif", textShadow: '0 0 20px rgba(56, 189, 248, 0.5)' }}>{resumeData.name}</h1>
                 <p className="text-xl md:text-2xl text-blue-400 mb-12" style={{ fontFamily: "'Roboto', sans-serif" }}>{resumeData.tagline}</p>
