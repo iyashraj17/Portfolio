@@ -355,7 +355,7 @@ const App = () => {
     return (
         <>
             <ParticleBackground />
-            <div className="relative z-10">
+            <div className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center p-4">
                 <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
                 {page === 'landing' ? (
                     <LandingPage onNavigate={() => setPage('portfolio')} />
