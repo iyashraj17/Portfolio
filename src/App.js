@@ -186,11 +186,9 @@ const ParticleBackground = () => {
 
 const LandingPage = ({ onNavigate }) => {
     return (
-        <div className="h-screen w-screen flex flex-col items-center justify-center text-white text-center p-4">
-            <div className="animate-fade-in-down">
-                <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: "'Exo 2', sans-serif", textShadow: '0 0 20px rgba(56, 189, 248, 0.5)' }}>{resumeData.name}</h1>
-                <p className="text-xl md:text-2xl text-blue-400 mb-12" style={{ fontFamily: "'Roboto', sans-serif" }}>{resumeData.tagline}</p>
-            </div>
+        <div className="animate-fade-in-down text-center">
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: "'Exo 2', sans-serif", textShadow: '0 0 20px rgba(56, 189, 248, 0.5)' }}>{resumeData.name}</h1>
+            <p className="text-xl md:text-2xl text-blue-400 mb-12" style={{ fontFamily: "'Roboto', sans-serif" }}>{resumeData.tagline}</p>
             <button
                 onClick={onNavigate}
                 className="relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-110 animate-fade-in-up interactive shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50"
@@ -352,10 +350,14 @@ const App = () => {
         };
     }, []);
 
+    const mainContainerClasses = page === 'landing' 
+        ? "relative z-10 min-h-screen flex flex-col items-center justify-center"
+        : "relative z-10";
+
     return (
         <>
             <ParticleBackground />
-            <div className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center p-4">
+            <div className={mainContainerClasses}>
                 <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
                 {page === 'landing' ? (
                     <LandingPage onNavigate={() => setPage('portfolio')} />
