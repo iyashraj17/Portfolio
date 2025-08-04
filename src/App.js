@@ -186,7 +186,7 @@ const ParticleBackground = () => {
 
 const LandingPage = ({ onNavigate }) => {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen text-white text-center p-4 z-10 relative">
+        <div className="flex flex-col items-center justify-center flex-grow text-white text-center p-4">
             <div className="animate-fade-in-down">
                 <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: "'Exo 2', sans-serif", textShadow: '0 0 20px rgba(56, 189, 248, 0.5)' }}>{resumeData.name}</h1>
                 <p className="text-xl md:text-2xl text-blue-400 mb-12" style={{ fontFamily: "'Roboto', sans-serif" }}>{resumeData.tagline}</p>
@@ -355,7 +355,7 @@ const App = () => {
     return (
         <>
             <ParticleBackground />
-            <div className="relative z-10">
+            <div className="relative z-10 min-h-screen flex flex-col">
                 <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
                 {page === 'landing' ? (
                     <LandingPage onNavigate={() => setPage('portfolio')} />
