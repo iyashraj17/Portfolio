@@ -138,6 +138,12 @@ const App = () => {
 
     // Effect for injecting dynamic styles and setting up animations
     useEffect(() => {
+        // Load Tailwind CSS from CDN
+        const tailwindScript = document.createElement('script');
+        tailwindScript.src = 'https://cdn.tailwindcss.com';
+        document.head.appendChild(tailwindScript);
+
+        // Inject Custom Styles & Animations
         const styleSheet = document.createElement("style");
         styleSheet.type = "text/css";
         styleSheet.innerText = `
@@ -159,6 +165,7 @@ const App = () => {
         `;
         document.head.appendChild(styleSheet);
         
+        // Setup Intersection Observer for Animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('is-visible');
@@ -166,7 +173,9 @@ const App = () => {
         }, { threshold: 0.1 });
         document.querySelectorAll('section').forEach(section => observer.observe(section));
 
+        // Cleanup function
         return () => {
+            if (document.head.contains(tailwindScript)) document.head.removeChild(tailwindScript);
             if (document.head.contains(styleSheet)) document.head.removeChild(styleSheet);
             observer.disconnect();
         };
