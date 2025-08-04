@@ -112,11 +112,99 @@ const createRipple = (event) => {
     button.appendChild(circle);
 };
 
-// --- Main App Component ---
-const App = () => {
+// --- Background Component ---
+const ParticleBackground = () => {
+    const canvasRef = useRef(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+        
+        const resizeCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let particles = [];
+        const particleCount = Math.floor(canvas.width / 30);
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5 + 1,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            });
+        }
+
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
+                ctx.fill();
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i; j < particles.length; j++) {
+                    const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 100})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        };
+        animate();
+
+        return () => {
+            window.removeEventListener('resize', resizeCanvas);
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
+
+    return <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: -1, background: '#030712' }} />;
+};
+
+
+// --- Page Components ---
+
+const LandingPage = ({ onNavigate }) => {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen text-white text-center p-4 z-10 relative">
+            <div className="animate-fade-in-down">
+                <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: "'Exo 2', sans-serif", textShadow: '0 0 20px rgba(56, 189, 248, 0.5)' }}>{resumeData.name}</h1>
+                <p className="text-xl md:text-2xl text-blue-400 mb-12" style={{ fontFamily: "'Roboto', sans-serif" }}>{resumeData.tagline}</p>
+            </div>
+            <button
+                onClick={onNavigate}
+                className="relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-110 animate-fade-in-up interactive shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50"
+                style={{ fontFamily: "'Exo 2', sans-serif" }}
+            >
+                Enter Portfolio
+            </button>
+        </div>
+    );
+};
+
+const PortfolioPage = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState('home');
-    const { cursorRef, isHovering } = useCursorFollow();
 
     const handleScroll = () => {
         const sections = ['home', 'about', 'skills', 'projects', 'experience', 'certifications', 'contact'];
@@ -132,40 +220,8 @@ const App = () => {
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
-        handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    // Effect for injecting dynamic styles and setting up animations
-    useEffect(() => {
-        // Load Tailwind CSS from CDN
-        const tailwindScript = document.createElement('script');
-        tailwindScript.src = 'https://cdn.tailwindcss.com';
-        document.head.appendChild(tailwindScript);
-
-        // Inject Custom Styles & Animations
-        const styleSheet = document.createElement("style");
-        styleSheet.type = "text/css";
-        styleSheet.innerText = `
-        body { cursor: none; }
-        .cursor-dot { position: fixed; top: -20px; left: -20px; width: 10px; height: 10px; background-color: #38bdf8; border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s ease-out, width 0.3s ease, height 0.3s ease, background-color 0.3s ease; mix-blend-mode: difference; }
-        .cursor-dot.hovered { width: 40px; height: 40px; background-color: rgba(56, 189, 248, 0.5); }
-        @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fade-in-right { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
-        @keyframes fade-in-left { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.8s 0.2s ease-out forwards; }
-        .animate-fade-in-right { animation: fade-in-right 0.8s ease-out forwards; }
-        .animate-fade-in-left { animation: fade-in-left 0.8s ease-out forwards; }
-        section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        section.is-visible { opacity: 1; transform: translateY(0); }
-        .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.3); transform: scale(0); animation: ripple-effect 0.6s linear; }
-        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
-        `;
-        document.head.appendChild(styleSheet);
+        handleScroll(); // Initial check
         
-        // Setup Intersection Observer for Animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('is-visible');
@@ -173,33 +229,30 @@ const App = () => {
         }, { threshold: 0.1 });
         document.querySelectorAll('section').forEach(section => observer.observe(section));
 
-        // Cleanup function
         return () => {
-            if (document.head.contains(tailwindScript)) document.head.removeChild(tailwindScript);
-            if (document.head.contains(styleSheet)) document.head.removeChild(styleSheet);
+            window.removeEventListener('scroll', handleScroll);
             observer.disconnect();
         };
     }, []);
 
     return (
-        <div className="bg-gray-900 text-white font-sans leading-normal tracking-tight">
-            <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
-            <header className="lg:hidden fixed top-0 left-0 right-0 bg-gray-900 bg-opacity-80 backdrop-blur-sm z-40 flex justify-between items-center p-4">
-                <h1 className="text-xl font-bold text-blue-400">YSR</h1>
+        <>
+            <header className="lg:hidden fixed top-0 left-0 right-0 bg-gray-900/50 backdrop-blur-md z-40 flex justify-between items-center p-4 border-b border-gray-800/50">
+                <h1 className="text-xl font-bold text-blue-400" style={{ fontFamily: "'Exo 2', sans-serif" }}>YSR</h1>
                 <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-2xl z-50 interactive">
                     {isMenuOpen ? <FiX /> : <FiMenu />}
                 </button>
             </header>
 
-            <aside className={`fixed top-0 left-0 h-full bg-gray-900/90 backdrop-blur-lg z-30 w-64 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:w-1/4 lg:max-w-xs xl:max-w-sm p-8 flex flex-col justify-between`}>
+            <aside className={`fixed top-0 left-0 h-full bg-gray-900/50 backdrop-blur-md z-30 w-64 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:w-1/4 lg:max-w-xs xl:max-w-sm p-8 flex flex-col justify-between border-r border-gray-800/50`}>
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">{resumeData.name}</h1>
+                    <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Exo 2', sans-serif" }}>{resumeData.name}</h1>
                     <p className="text-blue-400 text-lg mb-8">{resumeData.tagline}</p>
                     <nav>
                         <ul>
                             {navLinks.map(link => (
                                 <li key={link.id} className="mb-4">
-                                    <a href={`#${link.id}`} onClick={() => setIsMenuOpen(false)} className={`text-lg font-medium transition-all duration-300 flex items-center interactive ${activeSection === link.id ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`}>
+                                    <a href={`#${link.id}`} onClick={() => setIsMenuOpen(false)} className={`text-lg font-medium transition-all duration-300 flex items-center interactive ${activeSection === link.id ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`} style={{ fontFamily: "'Exo 2', sans-serif" }}>
                                         <span className={`w-8 h-px mr-4 bg-gray-500 transition-all duration-300 ${activeSection === link.id ? 'w-16 bg-blue-400' : ''}`}></span>
                                         {link.title}
                                     </a>
@@ -220,14 +273,104 @@ const App = () => {
                 <Section id="certifications" title="Certifications"><Certifications certifications={resumeData.certifications} /></Section>
                 <Section id="contact" title="Contact Me"><Contact email={resumeData.email} linkedin={resumeData.socials.linkedin} /></Section>
             </main>
-        </div>
+        </>
+    );
+};
+
+
+// --- Main App Component (Router) ---
+const App = () => {
+    const [page, setPage] = useState('landing'); // 'landing' or 'portfolio'
+    const { cursorRef, isHovering } = useCursorFollow();
+
+    // Effect for injecting dynamic styles
+    useEffect(() => {
+        const tailwindScript = document.createElement('script');
+        tailwindScript.src = 'https://cdn.tailwindcss.com';
+        document.head.appendChild(tailwindScript);
+
+        const fontLink = document.createElement('link');
+        fontLink.href = "https://fonts.googleapis.com/css2?family=Exo+2:wght@700&family=Roboto:wght@400;500&display=swap";
+        fontLink.rel = "stylesheet";
+        document.head.appendChild(fontLink);
+
+        const styleSheet = document.createElement("style");
+        styleSheet.type = "text/css";
+        styleSheet.innerText = `
+        body { 
+            cursor: none; 
+            font-family: 'Roboto', sans-serif;
+            background-color: #030712;
+            color: #f9fafb;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Exo 2', sans-serif;
+        }
+        .text-glow {
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+        }
+        .card-illuminate {
+             position: relative;
+             overflow: hidden;
+             background: rgba(17, 24, 39, 0.8);
+             border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .card-illuminate:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(110deg, transparent 25%, rgba(56, 189, 248, 0.2), transparent 75%);
+            transition: left 0.6s ease-in-out;
+        }
+        .card-illuminate:hover:before {
+            left: 100%;
+        }
+        .cursor-dot { position: fixed; top: -20px; left: -20px; width: 10px; height: 10px; background-color: #38bdf8; border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s ease-out, width 0.3s ease, height 0.3s ease, background-color 0.3s ease; mix-blend-mode: difference; }
+        .cursor-dot.hovered { width: 40px; height: 40px; background-color: rgba(56, 189, 248, 0.5); }
+        @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fade-in-right { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
+        @keyframes fade-in-left { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
+        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
+        .animate-fade-in-up { animation: fade-in-up 0.8s 0.2s ease-out forwards; }
+        .animate-fade-in-right { animation: fade-in-right 0.8s ease-out forwards; }
+        .animate-fade-in-left { animation: fade-in-left 0.8s ease-out forwards; }
+        section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        section.is-visible { opacity: 1; transform: translateY(0); }
+        .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.3); transform: scale(0); animation: ripple-effect 0.6s linear; }
+        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
+        `;
+        document.head.appendChild(styleSheet);
+        
+        return () => {
+            if (document.head.contains(tailwindScript)) document.head.removeChild(tailwindScript);
+            if (document.head.contains(fontLink)) document.head.removeChild(fontLink);
+            if (document.head.contains(styleSheet)) document.head.removeChild(styleSheet);
+        };
+    }, []);
+
+    return (
+        <>
+            <ParticleBackground />
+            <div className="relative z-10">
+                <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
+                {page === 'landing' ? (
+                    <LandingPage onNavigate={() => setPage('portfolio')} />
+                ) : (
+                    <PortfolioPage />
+                )}
+            </div>
+        </>
     );
 };
 
 // --- Section Components ---
 const Section = ({ id, title, children }) => (
     <section id={id} className="py-16 min-h-screen/2">
-        {title && <h2 className="text-2xl font-bold text-blue-400 mb-8 tracking-wider uppercase">{title}</h2>}
+        {title && <h2 className="text-2xl font-bold text-blue-400 mb-8 tracking-wider uppercase text-glow">{title}</h2>}
         {children}
     </section>
 );
@@ -237,7 +380,7 @@ const Home = ({tagline, name}) => {
     return (
         <div className="flex items-center justify-center min-h-screen -mt-16 lg:mt-0">
             <div className="text-center">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 animate-fade-in-down">{name}</h1>
+                <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 animate-fade-in-down text-glow">{name}</h1>
                 <p className="text-xl md:text-2xl text-blue-400 animate-fade-in-up h-8">{typedTagline}<span className="inline-block w-1 h-7 bg-blue-400 animate-pulse ml-1"></span></p>
             </div>
         </div>
@@ -277,7 +420,7 @@ const Skills = ({ skills }) => (
 );
 
 const SkillTag = ({ label }) => (
-    <div className="bg-gray-800 text-blue-300 py-2 px-4 rounded-md text-sm font-medium cursor-default transition-all duration-300 hover:bg-gray-700 hover:shadow-md hover:shadow-blue-500/10 interactive">
+    <div className="bg-gray-800/80 text-blue-300 py-2 px-4 rounded-md text-sm font-medium cursor-default transition-all duration-300 hover:bg-gray-700/90 hover:shadow-md hover:shadow-blue-500/10 interactive border border-gray-700">
         {label}
     </div>
 );
@@ -289,7 +432,7 @@ const Projects = ({ projects }) => (
 );
 
 const ProjectCard = ({ title, description, tech, link }) => (
-    <a href={link} target="_blank" rel="noopener noreferrer" className="block bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between interactive">
+    <a href={link} target="_blank" rel="noopener noreferrer" className="block p-6 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between interactive card-illuminate">
         <div>
             <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
             <p className="text-gray-400 mb-4">{description}</p>
@@ -304,10 +447,10 @@ const ProjectCard = ({ title, description, tech, link }) => (
 );
 
 const Experience = ({ experience }) => (
-    <div className="relative border-l-2 border-gray-700 pl-8">
+    <div className="relative border-l-2 border-blue-500/30 pl-8">
         {experience.map((job, index) => (
             <div key={index} className="mb-12 group">
-                <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-2 mt-1.5 border-2 border-gray-900 transition-transform group-hover:scale-125"></div>
+                <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-2.5 mt-1.5 border-4 border-gray-900 transition-transform group-hover:scale-125"></div>
                 <p className="text-sm text-gray-500">{job.period}</p>
                 <h3 className="text-xl font-bold text-white mt-1">{job.role}</h3>
                 <p className="text-lg text-gray-400 mb-3">{job.company}</p>
@@ -322,7 +465,7 @@ const Experience = ({ experience }) => (
 const Certifications = ({ certifications }) => (
     <div className="space-y-6">
         {certifications.map(cert => (
-            <a href={cert.link} key={cert.name} target="_blank" rel="noopener noreferrer" className="block bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors group interactive">
+            <a href={cert.link} key={cert.name} target="_blank" rel="noopener noreferrer" className="block p-4 rounded-lg transition-colors group interactive card-illuminate">
                 <h3 className="text-lg font-semibold text-white group-hover:text-blue-400">{cert.name}</h3>
                 <p className="text-gray-400">{cert.issuer}</p>
             </a>
