@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './index.css'; // Import the new CSS file
 
 // --- SVG Icon Components ---
 const FiMail = (props) => <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>;
@@ -135,30 +136,6 @@ const App = () => {
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
-    // Effect for injecting dynamic styles
-    useEffect(() => {
-        const styleSheet = document.createElement("style");
-        styleSheet.type = "text/css";
-        styleSheet.innerText = `
-        .cursor-dot { position: fixed; top: -20px; left: -20px; width: 10px; height: 10px; background-color: #38bdf8; border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s ease-out, width 0.3s ease, height 0.3s ease, background-color 0.3s ease; mix-blend-mode: difference; }
-        .cursor-dot.hovered { width: 40px; height: 40px; background-color: rgba(56, 189, 248, 0.5); }
-        @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fade-in-right { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
-        @keyframes fade-in-left { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.8s 0.2s ease-out forwards; }
-        .animate-fade-in-right { animation: fade-in-right 0.8s ease-out forwards; }
-        .animate-fade-in-left { animation: fade-in-left 0.8s ease-out forwards; }
-        section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        section.is-visible { opacity: 1; transform: translateY(0); }
-        .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.3); transform: scale(0); animation: ripple-effect 0.6s linear; }
-        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
-        `;
-        document.head.appendChild(styleSheet);
-        return () => { if (document.head.contains(styleSheet)) document.head.removeChild(styleSheet); };
-    }, []);
     
     // Effect for scroll-based animations
     useEffect(() => {
@@ -172,7 +149,7 @@ const App = () => {
     }, []);
 
     return (
-        <div className="bg-gray-900 text-white font-sans leading-normal tracking-tight cursor-none">
+        <div className="bg-gray-900 text-white font-sans leading-normal tracking-tight">
             <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
             <header className="lg:hidden fixed top-0 left-0 right-0 bg-gray-900 bg-opacity-80 backdrop-blur-sm z-40 flex justify-between items-center p-4">
                 <h1 className="text-xl font-bold text-blue-400">YSR</h1>
