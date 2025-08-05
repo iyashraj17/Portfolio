@@ -18,7 +18,7 @@ const resumeData = {
     location: "Kanpur, Uttar Pradesh, India",
     email: "rathoresinghyashraj17@gmail.com",
     phone: "+91-6387175894",
-    bio: "Analytical and data-driven professional with hands-on experience in predictive modeling, data visualization, and AI/ML applications. Skilled in Python, SQL, Excel, and Power BI, with a strong ability to extract insights from complex datasets. Passionate about using data to solve real-world problems and support strategic decision-making in fast-paced environments.",
+    bio: "Analytical thinker and aspiring Product Management professional with hands-on experience in leveraging data for decision-making, user insights, and business growth. Skilled in translating large, complex datasets into actionable product strategies through tools like Python, SQL, Excel, and Power BI. Adept at collaborating with cross-functional teams, understanding user needs, and driving product improvements through data-backed experimentation and insights.",
     skills: {
         technical: ["Python (Pandas, Numpy, Matplotlib)", "SQL (Advanced Queries)", "Power BI", "Excel", "Data Cleaning", "Predictive Analytics"],
         soft: ["Emotional Intelligence", "Client Communication", "Adaptability", "Curiosity", "Team Collaboration", "Product Lifecycle", "Market Research", "Data-Driven Decision Making"]
@@ -43,7 +43,7 @@ const resumeData = {
         github: "https://github.com/iyashraj17",
         leetcode: "https://leetcode.com/u/SINGHRATHORE17/"
     },
-    resumeUrl: "https://drive.google.com/file/d/1x0UG0sIROzmI6dzP2uCpKCqTPi4WrPnm/view?usp=drive_link"
+    resumeUrl: "https://drive.google.com/file/d/1HjdjqJQoBBHqpvw2P9LSyG_wQ40xzuTk/view?usp=drive_link"
 };
 
 const navLinks = [
@@ -55,10 +55,35 @@ const navLinks = [
     { id: 'contact', title: 'Contact' },
 ];
 
+// --- Hooks ---
+const useCursorFollow = () => {
+    const cursorRef = useRef(null);
+    const [isHovering, setIsHovering] = useState(false);
+    useEffect(() => {
+        const onMouseMove = (e) => {
+            if (cursorRef.current) {
+                cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            }
+        };
+        const onMouseOver = (e) => { if (e.target.closest('a, button')) setIsHovering(true); };
+        const onMouseOut = (e) => { if (e.target.closest('a, button')) setIsHovering(false); };
+        window.addEventListener('mousemove', onMouseMove);
+        document.body.addEventListener('mouseover', onMouseOver);
+        document.body.addEventListener('mouseout', onMouseOut);
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove);
+            document.body.removeEventListener('mouseover', onMouseOver);
+            document.body.removeEventListener('mouseout', onMouseOut);
+        };
+    }, []);
+    return { cursorRef, isHovering };
+};
+
 // --- Main App Component ---
 const App = () => {
     const [activeSection, setActiveSection] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { cursorRef, isHovering } = useCursorFollow();
     
     const handleScroll = () => {
         const sections = ['about', 'skills', 'projects', 'experience', 'certifications', 'contact'];
@@ -90,7 +115,7 @@ const App = () => {
 
         const styleSheet = document.createElement("style");
         styleSheet.innerText = `
-            body { font-family: 'Source Sans Pro', sans-serif; background-color: #1a1a1a; color: #d1d5db; }
+            body { font-family: 'Source Sans Pro', sans-serif; background-color: #1a1a1a; color: #d1d5db; cursor: none; }
             h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
             .gradient-text { background: -webkit-linear-gradient(45deg, #e0e0e0, #b0b0b0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
             .glassmorphism { background: rgba(26, 26, 26, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -101,6 +126,12 @@ const App = () => {
             .shape1 { width: 400px; height: 400px; background: rgba(192, 132, 252, 0.1); top: 10%; left: 10%; animation: move 15s infinite alternate; }
             .shape2 { width: 300px; height: 300px; background: rgba(253, 186, 116, 0.1); top: 50%; right: 10%; animation: move 18s infinite alternate-reverse; }
             @keyframes move { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(100px, 50px) rotate(45deg); } }
+            
+            .custom-cursor { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; }
+            .cursor-dot { width: 8px; height: 8px; background-color: #f0f0f0; border-radius: 50%; transform: translate(-50%, -50%); transition: all 0.2s ease-out; position: relative; }
+            .cursor-dot::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; border: 2px solid #f0f0f0; opacity: 0; transition: all 0.3s ease-out; transform-origin: center; transform: translate(-50%, -50%) scale(0.5); }
+            .cursor-dot.hovered { background-color: transparent; }
+            .cursor-dot.hovered::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         `;
         document.head.appendChild(styleSheet);
 
@@ -126,6 +157,9 @@ const App = () => {
 
     return (
         <>
+            <div ref={cursorRef} className="custom-cursor">
+                <div className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
+            </div>
             <div className="aurora-background">
                 <div className="aurora-shape shape1"></div>
                 <div className="aurora-shape shape2"></div>
