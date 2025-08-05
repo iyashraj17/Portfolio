@@ -18,7 +18,7 @@ const resumeData = {
     location: "Kanpur, Uttar Pradesh, India",
     email: "rathoresinghyashraj17@gmail.com",
     phone: "+91-6387175894",
-    bio: "Analytical thinker and aspiring Product Management professional with hands-on experience in leveraging data for decision-making, user insights, and business growth. Skilled in translating large, complex datasets into actionable product strategies through tools like Python, SQL, Excel, and Power BI. Adept at collaborating with cross-functional teams, understanding user needs, and driving product improvements through data-backed experimentation and insights.",
+    bio: "Analytical and data-driven professional with hands-on experience in predictive modeling, data visualization, and AI/ML applications. Skilled in Python, SQL, Excel, and Power BI, with a strong ability to extract insights from complex datasets. Passionate about using data to solve real-world problems and support strategic decision-making in fast-paced environments.",
     skills: {
         technical: ["Python (Pandas, Numpy, Matplotlib)", "SQL (Advanced Queries)", "Power BI", "Excel", "Data Cleaning", "Predictive Analytics"],
         soft: ["Emotional Intelligence", "Client Communication", "Adaptability", "Curiosity", "Team Collaboration", "Product Lifecycle", "Market Research", "Data-Driven Decision Making"]
