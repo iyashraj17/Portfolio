@@ -18,7 +18,7 @@ const resumeData = {
     location: "Kanpur, Uttar Pradesh, India",
     email: "rathoresinghyashraj17@gmail.com",
     phone: "+91-6387175894",
-    bio: "Analytical thinker and aspiring Product Management professional with hands-on experience in leveraging data for decision-making, user insights, and business growth. Skilled in translating large, complex datasets into actionable product strategies through tools like Python, SQL, Excel, and Power BI. Adept at collaborating with cross-functional teams, understanding user needs, and driving product improvements through data-backed experimentation and insights.",
+    bio: "Analytical and data-driven professional with hands-on experience in predictive modeling, data visualization, and AI/ML applications. Skilled in Python, SQL, Excel, and Power BI, with a strong ability to extract insights from complex datasets. Passionate about using data to solve real-world problems and support strategic decision-making in fast-paced environments.",
     skills: {
         technical: ["Python (Pandas, Numpy, Matplotlib)", "SQL (Advanced Queries)", "Power BI", "Excel", "Data Cleaning", "Predictive Analytics"],
         soft: ["Emotional Intelligence", "Client Communication", "Adaptability", "Curiosity", "Team Collaboration", "Product Lifecycle", "Market Research", "Data-Driven Decision Making"]
@@ -43,12 +43,11 @@ const resumeData = {
         github: "https://github.com/iyashraj17",
         leetcode: "https://leetcode.com/u/SINGHRATHORE17/"
     },
-    resumeUrl: "https://drive.google.com/file/d/1HjdjqJQoBBHqpvw2P9LSyG_wQ40xzuTk/view?usp=drive_link"
+    resumeUrl: "https://drive.google.com/file/d/1x0UG0sIROzmI6dzP2uCpKCqTPi4WrPnm/view?usp=drive_link"
 };
 
 const navLinks = [
-    { id: 'home', title: 'Home' },
-    { id: 'about', title: 'About Me' },
+    { id: 'about', title: 'About' },
     { id: 'skills', title: 'Skills' },
     { id: 'projects', title: 'Projects' },
     { id: 'experience', title: 'Experience' },
@@ -56,170 +55,55 @@ const navLinks = [
     { id: 'contact', title: 'Contact' },
 ];
 
-// --- Hooks ---
-const useTypingEffect = (text, speed = 100) => {
-    const [displayedText, setDisplayedText] = useState('');
-    useEffect(() => {
-        let i = 0;
-        const typingInterval = setInterval(() => {
-            if (i < text.length) {
-                setDisplayedText(text.substring(0, i + 1));
-                i++;
-            } else {
-                clearInterval(typingInterval);
-            }
-        }, speed);
-        return () => clearInterval(typingInterval);
-    }, [text, speed]);
-    return displayedText;
-};
-
-const useCursorFollow = () => {
-    const cursorRef = useRef(null);
-    const [isHovering, setIsHovering] = useState(false);
-    useEffect(() => {
-        const onMouseMove = (e) => {
-            if (cursorRef.current) {
-                cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-            }
-        };
-        const onMouseOver = (e) => { if (e.target.closest('a, button, .interactive')) setIsHovering(true); };
-        const onMouseOut = (e) => { if (e.target.closest('a, button, .interactive')) setIsHovering(false); };
-        window.addEventListener('mousemove', onMouseMove);
-        document.body.addEventListener('mouseover', onMouseOver);
-        document.body.addEventListener('mouseout', onMouseOut);
-        return () => {
-            window.removeEventListener('mousemove', onMouseMove);
-            document.body.removeEventListener('mouseover', onMouseOver);
-            document.body.removeEventListener('mouseout', onMouseOut);
-        };
-    }, []);
-    return { cursorRef, isHovering };
-};
-
-// --- Helper for Ripple Effect ---
-const createRipple = (event) => {
-    const button = event.currentTarget;
-    const circle = document.createElement("span");
-    const diameter = Math.max(button.clientWidth, button.clientHeight);
-    const radius = diameter / 2;
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
-    circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
-    circle.classList.add("ripple");
-    const ripple = button.getElementsByClassName("ripple")[0];
-    if (ripple) ripple.remove();
-    button.appendChild(circle);
-};
-
-// --- Background Component ---
-const ParticleBackground = () => {
-    const canvasRef = useRef(null);
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        let animationFrameId;
-        
-        const resizeCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        let particles = [];
-        const particleCount = Math.floor(canvas.width / 30);
-
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 1,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5
-            });
-        }
-
-        const animate = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
-                ctx.fill();
-            });
-
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i; j < particles.length; j++) {
-                    const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
-                    if (dist < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 100})`;
-                        ctx.stroke();
-                    }
-                }
-            }
-            animationFrameId = requestAnimationFrame(animate);
-        };
-        animate();
-
-        return () => {
-            window.removeEventListener('resize', resizeCanvas);
-            cancelAnimationFrame(animationFrameId);
-        };
-    }, []);
-
-    return <canvas ref={canvasRef} style={{ position: 'fixed', top: 0, left: 0, zIndex: -1, background: '#030712' }} />;
-};
-
-
-// --- Page Components ---
-
-const LandingPage = ({ onNavigate }) => {
-    return (
-        <div className="animate-fade-in-down text-center">
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ fontFamily: "'Exo 2', sans-serif", textShadow: '0 0 20px rgba(56, 189, 248, 0.5)' }}>{resumeData.name}</h1>
-            <p className="text-xl md:text-2xl text-blue-400 mb-12" style={{ fontFamily: "'Roboto', sans-serif" }}>{resumeData.tagline}</p>
-            <button
-                onClick={onNavigate}
-                className="relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all duration-300 transform hover:scale-110 animate-fade-in-up interactive shadow-lg shadow-blue-500/30 hover:shadow-blue-400/50"
-                style={{ fontFamily: "'Exo 2', sans-serif" }}
-            >
-                Enter Portfolio
-            </button>
-        </div>
-    );
-};
-
-const PortfolioPage = () => {
+// --- Main App Component ---
+const App = () => {
+    const [activeSection, setActiveSection] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState('home');
-
+    
     const handleScroll = () => {
-        const sections = ['home', 'about', 'skills', 'projects', 'experience', 'certifications', 'contact'];
-        const scrollPosition = window.scrollY + window.innerHeight / 2;
-        for (const section of sections) {
-            const element = document.getElementById(section);
-            if (element && scrollPosition >= element.offsetTop && scrollPosition < element.offsetTop + element.offsetHeight) {
-                setActiveSection(section);
-                break;
+        const sections = ['about', 'skills', 'projects', 'experience', 'certifications', 'contact'];
+        const scrollPosition = window.scrollY + window.innerHeight / 3;
+        let currentSection = '';
+        for (const sectionId of sections) {
+            const element = document.getElementById(sectionId);
+            if (element && scrollPosition >= element.offsetTop) {
+                currentSection = sectionId;
             }
         }
+        setActiveSection(currentSection);
     };
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Initial check
-        
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        const tailwindScript = document.createElement('script');
+        tailwindScript.src = 'https://cdn.tailwindcss.com';
+        document.head.appendChild(tailwindScript);
+
+        const fontLink = document.createElement('link');
+        fontLink.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+Pro:wght@400;600&display=swap";
+        fontLink.rel = "stylesheet";
+        document.head.appendChild(fontLink);
+
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+            body { font-family: 'Source Sans Pro', sans-serif; background-color: #1a1a1a; color: #d1d5db; }
+            h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+            .gradient-text { background: -webkit-linear-gradient(45deg, #e0e0e0, #b0b0b0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .glassmorphism { background: rgba(26, 26, 26, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+            section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+            section.is-visible { opacity: 1; transform: translateY(0); }
+            .aurora-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: #1a1a1a; }
+            .aurora-shape { position: absolute; border-radius: 50%; filter: blur(100px); }
+            .shape1 { width: 400px; height: 400px; background: rgba(192, 132, 252, 0.1); top: 10%; left: 10%; animation: move 15s infinite alternate; }
+            .shape2 { width: 300px; height: 300px; background: rgba(253, 186, 116, 0.1); top: 50%; right: 10%; animation: move 18s infinite alternate-reverse; }
+            @keyframes move { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(100px, 50px) rotate(45deg); } }
+        `;
+        document.head.appendChild(styleSheet);
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('is-visible');
@@ -228,275 +112,232 @@ const PortfolioPage = () => {
         document.querySelectorAll('section').forEach(section => observer.observe(section));
 
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            if (document.head.contains(tailwindScript)) document.head.removeChild(tailwindScript);
+            if (document.head.contains(fontLink)) document.head.removeChild(fontLink);
+            if (document.head.contains(styleSheet)) document.head.removeChild(styleSheet);
             observer.disconnect();
         };
     }, []);
 
+    const scrollToSection = (id) => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        setIsMenuOpen(false);
+    };
+
     return (
         <>
-            <header className="lg:hidden fixed top-0 left-0 right-0 bg-gray-900/50 backdrop-blur-md z-40 flex justify-between items-center p-4 border-b border-gray-800/50">
-                <h1 className="text-xl font-bold text-blue-400" style={{ fontFamily: "'Exo 2', sans-serif" }}>YSR</h1>
-                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-2xl z-50 interactive">
+            <div className="aurora-background">
+                <div className="aurora-shape shape1"></div>
+                <div className="aurora-shape shape2"></div>
+            </div>
+            <Header navLinks={navLinks} activeSection={activeSection} onLinkClick={scrollToSection} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+            <main className="container mx-auto px-6 md:px-12">
+                <HeroSection onButtonClick={() => scrollToSection('about')} />
+                <Section id="about"><About /></Section>
+                <Section id="skills"><Skills /></Section>
+                <Section id="projects"><Projects /></Section>
+                <Section id="experience"><Experience /></Section>
+                <Section id="certifications"><Certifications /></Section>
+                <Section id="contact"><Contact /></Section>
+            </main>
+            <Footer />
+        </>
+    );
+};
+
+// --- Layout Components ---
+const Header = ({ navLinks, activeSection, onLinkClick, isMenuOpen, setIsMenuOpen }) => (
+    <header className="fixed top-0 left-0 right-0 z-50 p-4">
+        <div className="container mx-auto flex justify-between items-center p-4 glassmorphism rounded-xl">
+            <h1 className="text-3xl font-bold text-white tracking-wider">YSR</h1>
+            <nav className="hidden md:flex space-x-8">
+                {navLinks.map(link => (
+                    <button key={link.id} onClick={() => onLinkClick(link.id)} className={`text-lg font-medium transition-colors relative ${activeSection === link.id ? 'text-gray-100' : 'text-gray-400 hover:text-white'}`}>
+                        {link.title}
+                        {activeSection === link.id && <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-100 rounded-full"></span>}
+                    </button>
+                ))}
+            </nav>
+            <div className="md:hidden">
+                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-2xl text-white">
                     {isMenuOpen ? <FiX /> : <FiMenu />}
                 </button>
-            </header>
+            </div>
+        </div>
+        {isMenuOpen && (
+            <div className="md:hidden mt-2 p-4 glassmorphism rounded-xl">
+                <nav className="flex flex-col space-y-4">
+                    {navLinks.map(link => (
+                        <button key={link.id} onClick={() => onLinkClick(link.id)} className="text-lg text-left text-gray-300 hover:text-white">
+                            {link.title}
+                        </button>
+                    ))}
+                </nav>
+            </div>
+        )}
+    </header>
+);
 
-            <aside className={`fixed top-0 left-0 h-full bg-gray-900/50 backdrop-blur-md z-30 w-64 transform transition-transform duration-300 ease-in-out ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:w-1/4 lg:max-w-xs xl:max-w-sm p-8 flex flex-col justify-between border-r border-gray-800/50`}>
-                <div>
-                    <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: "'Exo 2', sans-serif" }}>{resumeData.name}</h1>
-                    <p className="text-blue-400 text-lg mb-8">{resumeData.tagline}</p>
-                    <nav>
-                        <ul>
-                            {navLinks.map(link => (
-                                <li key={link.id} className="mb-4">
-                                    <a href={`#${link.id}`} onClick={() => setIsMenuOpen(false)} className={`text-lg font-medium transition-all duration-300 flex items-center interactive ${activeSection === link.id ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`} style={{ fontFamily: "'Exo 2', sans-serif" }}>
-                                        <span className={`w-8 h-px mr-4 bg-gray-500 transition-all duration-300 ${activeSection === link.id ? 'w-16 bg-blue-400' : ''}`}></span>
-                                        {link.title}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
+const HeroSection = ({ onButtonClick }) => {
+    return (
+        <section className="min-h-screen flex flex-col items-center justify-center text-center">
+            <h1 className="text-6xl md:text-8xl font-bold mb-4 gradient-text">{resumeData.name}</h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-8">{resumeData.tagline}</p>
+            <button onClick={onButtonClick} className="px-8 py-3 bg-transparent border-2 border-gray-300 text-gray-300 font-bold rounded-full text-lg hover:bg-gray-300 hover:text-gray-900 transition-all duration-300">
+                Explore My Work
+            </button>
+        </section>
+    );
+};
+
+const Section = ({ id, children }) => <section id={id} className="py-20">{children}</section>;
+
+const Footer = () => (
+    <footer className="text-center py-8 text-gray-500">
+        <div className="flex justify-center space-x-6 mb-4">
+            <a href={resumeData.socials.github} target="_blank" rel="noopener noreferrer" className="text-3xl hover:text-white transition-colors"><FiGithub /></a>
+            <a href={resumeData.socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-3xl hover:text-white transition-colors"><FiLinkedin /></a>
+            <a href={resumeData.socials.leetcode} target="_blank" rel="noopener noreferrer" className="text-3xl hover:text-white transition-colors"><FaLeetcode /></a>
+        </div>
+        <p>&copy; {new Date().getFullYear()} Yashraj Singh Rathore. All Rights Reserved.</p>
+    </footer>
+);
+
+// --- Content Components ---
+const About = () => (
+    <>
+        <h2 className="text-5xl font-bold mb-12 text-center gradient-text">About Me</h2>
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+            <div className="relative group mb-8">
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-amber-400 rounded-full blur-xl opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                <img 
+                    src="https://i.ibb.co/bjnH3Bsj/ch-sihs-2025-07-14-at-22-26-51-fb095227.jpg" 
+                    alt="Yashraj Singh Rathore" 
+                    className="relative w-48 h-48 md:w-56 md:h-56 rounded-full object-cover shadow-2xl transition-transform duration-500 group-hover:scale-105" 
+                />
+            </div>
+            <p className="text-xl text-gray-300 leading-relaxed mb-8">
+                {resumeData.bio}
+            </p>
+            <div className="flex items-center justify-center gap-8 mb-8">
+                <div className="relative group">
+                    <FiMail className="text-gray-400 w-8 h-8 cursor-pointer transition-colors hover:text-white"/>
+                    <span className="absolute bottom-full mb-2 w-max px-3 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        {resumeData.email}
+                    </span>
                 </div>
-                <Footer socials={resumeData.socials} />
-            </aside>
-
-            <main className="lg:ml-[25%] xl:ml-[28%] p-4 sm:p-8 md:p-12 lg:p-16 mt-16 lg:mt-0">
-                <Section id="home" title=""><Home tagline={resumeData.tagline} name={resumeData.name} /></Section>
-                <Section id="about" title="About Me"><About bio={resumeData.bio} contact={{email: resumeData.email, phone: resumeData.phone, location: resumeData.location}} resumeUrl={resumeData.resumeUrl} /></Section>
-                <Section id="skills" title="Skills"><Skills skills={resumeData.skills} /></Section>
-                <Section id="projects" title="Projects"><Projects projects={resumeData.projects} /></Section>
-                <Section id="experience" title="Experience"><Experience experience={resumeData.experience} /></Section>
-                <Section id="certifications" title="Certifications"><Certifications certifications={resumeData.certifications} /></Section>
-                <Section id="contact" title="Contact Me"><Contact email={resumeData.email} linkedin={resumeData.socials.linkedin} /></Section>
-            </main>
-        </>
-    );
-};
-
-
-// --- Main App Component (Router) ---
-const App = () => {
-    const [page, setPage] = useState('landing'); // 'landing' or 'portfolio'
-    const { cursorRef, isHovering } = useCursorFollow();
-
-    // Effect for injecting dynamic styles
-    useEffect(() => {
-        const tailwindScript = document.createElement('script');
-        tailwindScript.src = 'https://cdn.tailwindcss.com';
-        document.head.appendChild(tailwindScript);
-
-        const fontLink = document.createElement('link');
-        fontLink.href = "https://fonts.googleapis.com/css2?family=Exo+2:wght@700&family=Roboto:wght@400;500&display=swap";
-        fontLink.rel = "stylesheet";
-        document.head.appendChild(fontLink);
-
-        const styleSheet = document.createElement("style");
-        styleSheet.type = "text/css";
-        styleSheet.innerText = `
-        body { 
-            cursor: none; 
-            font-family: 'Roboto', sans-serif;
-            background-color: #030712;
-            color: #f9fafb;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Exo 2', sans-serif;
-        }
-        .text-glow {
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
-        }
-        .card-illuminate {
-             position: relative;
-             overflow: hidden;
-             background: rgba(17, 24, 39, 0.8);
-             border: 1px solid rgba(56, 189, 248, 0.2);
-        }
-        .card-illuminate:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(110deg, transparent 25%, rgba(56, 189, 248, 0.2), transparent 75%);
-            transition: left 0.6s ease-in-out;
-        }
-        .card-illuminate:hover:before {
-            left: 100%;
-        }
-        .cursor-dot { position: fixed; top: -20px; left: -20px; width: 10px; height: 10px; background-color: #38bdf8; border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.1s ease-out, width 0.3s ease, height 0.3s ease, background-color 0.3s ease; mix-blend-mode: difference; }
-        .cursor-dot.hovered { width: 40px; height: 40px; background-color: rgba(56, 189, 248, 0.5); }
-        @keyframes fade-in-down { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fade-in-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fade-in-right { 0% { opacity: 0; transform: translateX(-30px); } 100% { opacity: 1; transform: translateX(0); } }
-        @keyframes fade-in-left { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
-        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.8s 0.2s ease-out forwards; }
-        .animate-fade-in-right { animation: fade-in-right 0.8s ease-out forwards; }
-        .animate-fade-in-left { animation: fade-in-left 0.8s ease-out forwards; }
-        section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        section.is-visible { opacity: 1; transform: translateY(0); }
-        .ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.3); transform: scale(0); animation: ripple-effect 0.6s linear; }
-        @keyframes ripple-effect { to { transform: scale(4); opacity: 0; } }
-        `;
-        document.head.appendChild(styleSheet);
-        
-        return () => {
-            if (document.head.contains(tailwindScript)) document.head.removeChild(tailwindScript);
-            if (document.head.contains(fontLink)) document.head.removeChild(fontLink);
-            if (document.head.contains(styleSheet)) document.head.removeChild(styleSheet);
-        };
-    }, []);
-
-    const mainContainerClasses = page === 'landing' 
-        ? "relative z-10 min-h-screen flex flex-col items-center justify-center"
-        : "relative z-10";
-
-    return (
-        <>
-            <ParticleBackground />
-            <div className={mainContainerClasses}>
-                <div ref={cursorRef} className={`cursor-dot ${isHovering ? 'hovered' : ''}`}></div>
-                {page === 'landing' ? (
-                    <LandingPage onNavigate={() => setPage('portfolio')} />
-                ) : (
-                    <PortfolioPage />
-                )}
+                <div className="relative group">
+                    <FiPhone className="text-gray-400 w-8 h-8 cursor-pointer transition-colors hover:text-white"/>
+                     <span className="absolute bottom-full mb-2 w-max px-3 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        {resumeData.phone}
+                    </span>
+                </div>
+                <div className="relative group">
+                    <FiMapPin className="text-gray-400 w-8 h-8 cursor-pointer transition-colors hover:text-white"/>
+                     <span className="absolute bottom-full mb-2 w-max px-3 py-1 bg-gray-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        {resumeData.location}
+                    </span>
+                </div>
             </div>
-        </>
-    );
-};
-
-// --- Section Components ---
-const Section = ({ id, title, children }) => (
-    <section id={id} className="py-16 min-h-screen/2">
-        {title && <h2 className="text-2xl font-bold text-blue-400 mb-8 tracking-wider uppercase text-glow">{title}</h2>}
-        {children}
-    </section>
-);
-
-const Home = ({tagline, name}) => {
-    const typedTagline = useTypingEffect(tagline, 80);
-    return (
-        <div className="flex items-center justify-center min-h-screen -mt-16 lg:mt-0">
-            <div className="text-center">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 animate-fade-in-down text-glow">{name}</h1>
-                <p className="text-xl md:text-2xl text-blue-400 animate-fade-in-up h-8">{typedTagline}<span className="inline-block w-1 h-7 bg-blue-400 animate-pulse ml-1"></span></p>
-            </div>
-        </div>
-    );
-}
-
-const About = ({ bio, contact, resumeUrl }) => (
-    <div className="flex flex-col lg:flex-row items-center gap-12">
-        <div className="lg:w-1/3 animate-fade-in-right">
-            <img src="https://i.ibb.co/bjnH3Bsj/ch-sihs-2025-07-14-at-22-26-51-fb095227.jpg" alt="Yashraj Singh Rathore" className="rounded-full w-48 h-48 lg:w-64 lg:h-64 mx-auto object-cover shadow-lg shadow-blue-500/20 border-4 border-gray-700" />
-        </div>
-        <div className="lg:w-2/3 animate-fade-in-left">
-            <p className="text-gray-300 mb-6 text-lg">{bio}</p>
-            <div className="space-y-3 text-gray-400 mb-8">
-                <a href={`mailto:${contact.email}`} className="flex items-center gap-4 interactive"><FiMail className="text-blue-400 w-5 h-5"/> {contact.email}</a>
-                <a href={`tel:${contact.phone}`} className="flex items-center gap-4 interactive"><FiPhone className="text-blue-400 w-5 h-5"/> {contact.phone}</a>
-                <div className="flex items-center gap-4"><FiMapPin className="text-blue-400 w-5 h-5"/> {contact.location}</div>
-            </div>
-            <a href={resumeUrl} download="Yashraj_Singh_Rathore_Resume.pdf" onClick={createRipple} className="relative overflow-hidden inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 interactive">
-                <FiDownload className="w-5 h-5" /> Download Resume
+            <a href={resumeData.resumeUrl} download="Yashraj_Singh_Rathore_Resume.pdf" className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-900 font-bold rounded-lg hover:bg-white transition-colors">
+                <FiDownload /> Download Resume
             </a>
         </div>
-    </div>
+    </>
 );
 
-const Skills = ({ skills }) => (
-    <div>
-        <h3 className="text-xl font-semibold text-white mb-4">Technical Skills</h3>
-        <div className="flex flex-wrap gap-3 mb-8">
-            {skills.technical.map(skill => <SkillTag key={skill} label={skill} />)}
-        </div>
-        <h3 className="text-xl font-semibold text-white mb-4">Soft Skills & Domain Concepts</h3>
-        <div className="flex flex-wrap gap-3">
-            {skills.soft.map(skill => <SkillTag key={skill} label={skill} />)}
-        </div>
-    </div>
-);
-
-const SkillTag = ({ label }) => (
-    <div className="bg-gray-800/80 text-blue-300 py-2 px-4 rounded-md text-sm font-medium cursor-default transition-all duration-300 hover:bg-gray-700/90 hover:shadow-md hover:shadow-blue-500/10 interactive border border-gray-700">
-        {label}
-    </div>
-);
-
-const Projects = ({ projects }) => (
-    <div className="grid md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-8">
-        {projects.map(p => <ProjectCard key={p.title} {...p} />)}
-    </div>
-);
-
-const ProjectCard = ({ title, description, tech, link }) => (
-    <a href={link} target="_blank" rel="noopener noreferrer" className="block p-6 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-2 flex flex-col justify-between interactive card-illuminate">
-        <div>
-            <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-            <p className="text-gray-400 mb-4">{description}</p>
-            <div className="flex flex-wrap gap-2 mb-4">
-                {tech.map(t => <span key={t} className="text-xs bg-blue-900/50 text-blue-300 py-1 px-2 rounded-full">{t}</span>)}
+const Skills = () => (
+    <>
+        <h2 className="text-5xl font-bold mb-12 text-center gradient-text">Skills</h2>
+        <div className="grid md:grid-cols-2 gap-12">
+            <div>
+                <h3 className="text-3xl font-bold mb-6 text-white">Technical Skills</h3>
+                <div className="flex flex-wrap gap-3">
+                    {resumeData.skills.technical.map(skill => <span key={skill} className="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg">{skill}</span>)}
+                </div>
+            </div>
+            <div>
+                <h3 className="text-3xl font-bold mb-6 text-white">Soft Skills</h3>
+                <div className="flex flex-wrap gap-3">
+                    {resumeData.skills.soft.map(skill => <span key={skill} className="bg-gray-800 text-gray-300 py-2 px-4 rounded-lg">{skill}</span>)}
+                </div>
             </div>
         </div>
-        <div className="inline-flex items-center gap-2 text-blue-400 group-hover:text-blue-300 font-semibold transition-colors">
-            View on GitHub <FiGithub className="w-5 h-5" />
-        </div>
-    </a>
+    </>
 );
 
-const Experience = ({ experience }) => (
-    <div className="relative border-l-2 border-blue-500/30 pl-8">
-        {experience.map((job, index) => (
-            <div key={index} className="mb-12 group">
-                <div className="absolute w-4 h-4 bg-blue-500 rounded-full -left-2.5 mt-1.5 border-4 border-gray-900 transition-transform group-hover:scale-125"></div>
-                <p className="text-sm text-gray-500">{job.period}</p>
-                <h3 className="text-xl font-bold text-white mt-1">{job.role}</h3>
-                <p className="text-lg text-gray-400 mb-3">{job.company}</p>
-                <ul className="list-disc list-inside space-y-2 text-gray-300">
-                    {job.contributions.map((c, i) => <li key={i}>{c}</li>)}
-                </ul>
+const Projects = () => (
+    <>
+        <h2 className="text-5xl font-bold mb-12 text-center gradient-text">Projects</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {resumeData.projects.map(p => (
+                <div key={p.title} className="p-6 glassmorphism rounded-xl flex flex-col justify-between transform hover:-translate-y-2 transition-transform duration-300 hover:shadow-2xl">
+                    <div>
+                        <h3 className="text-2xl font-bold mb-2 text-white">{p.title}</h3>
+                        <p className="mb-4 text-gray-400">{p.description}</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {p.tech.map(t => <span key={t} className="text-sm bg-gray-700 text-gray-300 py-1 px-3 rounded-full">{t}</span>)}
+                        </div>
+                    </div>
+                    <a href={p.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-300 hover:text-white font-semibold transition-colors">
+                        View on GitHub <FiGithub />
+                    </a>
+                </div>
+            ))}
+        </div>
+    </>
+);
+
+const Experience = () => (
+    <>
+        <h2 className="text-5xl font-bold mb-12 text-center gradient-text">Experience</h2>
+        <div className="relative border-l-2 border-gray-700 pl-8 space-y-12">
+            {resumeData.experience.map(job => (
+                <div key={job.company} className="relative">
+                    <div className="absolute -left-10 w-4 h-4 bg-gray-300 rounded-full mt-1.5 border-4 border-gray-800"></div>
+                    <p className="text-sm text-gray-500">{job.period}</p>
+                    <h3 className="text-2xl font-bold text-white mt-1">{job.role}</h3>
+                    <p className="text-xl text-gray-400 mb-3">{job.company}</p>
+                    <ul className="list-disc list-inside space-y-2 text-gray-300">
+                        {job.contributions.map((c, i) => <li key={i}>{c}</li>)}
+                    </ul>
+                </div>
+            ))}
+        </div>
+    </>
+);
+
+const Certifications = () => (
+    <>
+        <h2 className="text-5xl font-bold mb-12 text-center gradient-text">Certifications</h2>
+        <div className="space-y-6 max-w-3xl mx-auto">
+            {resumeData.certifications.map(cert => (
+                <a href={cert.link} key={cert.name} target="_blank" rel="noopener noreferrer" className="block p-4 glassmorphism rounded-xl transition-all duration-300 hover:border-gray-400/50">
+                    <h3 className="text-xl font-semibold text-white">{cert.name}</h3>
+                    <p className="text-gray-400">{cert.issuer}</p>
+                </a>
+            ))}
+        </div>
+    </>
+);
+
+const Contact = () => (
+    <>
+        <h2 className="text-5xl font-bold mb-8 text-center gradient-text">Get In Touch</h2>
+        <div className="text-center max-w-2xl mx-auto">
+            <p className="text-lg text-gray-300 mb-8">
+                I'm always open to discussing new projects, creative ideas, or opportunities to be part of an amazing team. Feel free to reach out.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href={`mailto:${resumeData.email}`} className="inline-block px-8 py-4 bg-gray-200 text-gray-900 font-bold rounded-lg text-lg hover:bg-white transition-colors">
+                    Email Me
+                </a>
+                <a href={resumeData.socials.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-transparent border-2 border-gray-400 text-gray-300 font-bold rounded-lg text-lg hover:bg-gray-400 hover:text-gray-900 transition-colors">
+                    <FiLinkedin /> LinkedIn
+                </a>
             </div>
-        ))}
-    </div>
-);
-
-const Certifications = ({ certifications }) => (
-    <div className="space-y-6">
-        {certifications.map(cert => (
-            <a href={cert.link} key={cert.name} target="_blank" rel="noopener noreferrer" className="block p-4 rounded-lg transition-colors group interactive card-illuminate">
-                <h3 className="text-lg font-semibold text-white group-hover:text-blue-400">{cert.name}</h3>
-                <p className="text-gray-400">{cert.issuer}</p>
-            </a>
-        ))}
-    </div>
-);
-
-const Contact = ({ email, linkedin }) => (
-    <div className="text-center">
-        <p className="text-lg text-gray-300 mb-6 max-w-2xl mx-auto">
-            I'm always open to discussing new projects, creative ideas, or opportunities to be part of an amazing team. Feel free to reach out.
-        </p>
-        <div className="flex justify-center items-center gap-6">
-            <a href={`mailto:${email}`} onClick={createRipple} className="relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 interactive">
-                <FiMail className="w-5 h-5" /> Email Me
-            </a>
-             <a href={linkedin} target="_blank" rel="noopener noreferrer" onClick={createRipple} className="relative overflow-hidden inline-flex items-center gap-3 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 interactive">
-                <FiLinkedin className="w-5 h-5" /> LinkedIn Profile
-            </a>
         </div>
-    </div>
-);
-
-const Footer = ({ socials }) => (
-    <div className="flex justify-center lg:justify-start space-x-6 text-gray-500">
-        <a href={socials.github} target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-400 transition-colors interactive"><FiGithub /></a>
-        <a href={socials.linkedin} target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-400 transition-colors interactive"><FiLinkedin /></a>
-        <a href={socials.leetcode} target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-400 transition-colors interactive"><FaLeetcode /></a>
-    </div>
+    </>
 );
 
 export default App;
